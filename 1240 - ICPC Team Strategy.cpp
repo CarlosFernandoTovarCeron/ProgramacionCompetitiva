@@ -1,7 +1,6 @@
-#include <iostream>
-#include <sstream>
-#include <string>
+#include <stdio.h>
 #include <cstring>
+#include <algorithm>
 
 #define inf 10000000
 
@@ -9,8 +8,7 @@ using namespace std;
 
 int tiempo[4][20];
 int dp[10000][4][600];
-
-int problemas;
+int problemas, casos, aux;
 
 int c(int b, int j, int t){
     if(t>280) return -inf;
@@ -19,14 +17,13 @@ int c(int b, int j, int t){
         return dp[b][j][t];
     }
     
-    int tiemporestante = 280 - t;
     bool existe = false;
     for(int i=1; i<=problemas; i++){
         int mask = 1 << i;
         if(!(mask&b)){
             for(int k=1; k<=3; k++){
                 if(j!=k){
-                    if(tiempo[k][i]<=tiemporestante){
+                    if(tiempo[k][i]<=280 - t){
                         existe = true;
                     }
                 }
@@ -58,27 +55,20 @@ int c(int b, int j, int t){
 }
 
 int main() {
-    int casos;
-    cin >> casos;
+
+    scanf("%d", &casos);
     while(casos--){
         memset(dp, -1, sizeof(dp));
-        cin >> problemas;
-        string linea;
-        getline(cin, linea); // nada
+        scanf("%d", &problemas);
         for(int i=1; i<=3; i++){
-            getline(cin, linea);
-            stringstream ss;
-            ss << linea;
             for(int j=1; j<=problemas; j++){
-                int aux;
-                ss >> aux;
+                scanf("%d", &aux);
                 tiempo[i][j] = aux;
             }
         }
         
-        cout << c(0, 0, 0) << endl;
-        
-        
+        printf("%d\n", c(0, 0, 0));
+
     }
 	return 0;
 }

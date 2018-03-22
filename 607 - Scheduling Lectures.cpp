@@ -1,4 +1,3 @@
-#include <iostream>
 #include <stdio.h>
 
 #define inf 1000000000;
@@ -67,37 +66,35 @@ pareja costo(int j){
 }
 
 int main(int argc, char** argv) {
-	freopen("inlibros.txt", "r", stdin);
-	freopen("outlibros.txt", "w", stdout);
+	//freopen("inlibros.txt", "r", stdin);
+	//freopen("outlibros.txt", "w", stdout);
     int casos = 1;
     while(true){
-        cin >> n;
+        scanf("%d", &n);
         if(n==0){
             break;
         }
-        for(int i=0; i<1005; i++){
+        for(int i=0; i<=n; i++){
             pareja aux;
             aux.libros=-1;
             dp[i] = aux;
         }
-       
-        cin >> l >> c;
+       	scanf("%d%d", &l, &c);
         int s = 0;
         suma[0] = 0;
         for(int i=1; i<=n; i++){
             int aux;
-            cin >> aux;
+            scanf("%d", &aux);
             s+=aux;
             suma[i] = s;
         }
         pareja res = costo(1);
         if(casos!=1){
-        	cout << endl;
+        	printf("\n");
 		}
-        cout << "Case " << casos << ":" << endl;
-        cout << "Minimum number of lectures: " << res.libros << endl;
-        cout << "Total dissatisfaction index: " << res.dis << endl;
-        //cout << res.libros << " " << res.dis << endl;
+		printf("Case %d:\n", casos);
+		printf("Minimum number of lectures: %d\n", res.libros);
+		printf("Total dissatisfaction index: %d\n", res.dis);
         casos++;
         
     }

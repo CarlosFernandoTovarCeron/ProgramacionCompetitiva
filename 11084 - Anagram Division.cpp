@@ -8,17 +8,23 @@
 using namespace std;
 string n;
 long d, s;
-long dp[1050][15][10005];
+long dp[1050][10005];
 long dpfact[10];
 
-long c(long b, long j, long acu){
-
-    if(j==-1){
+long c(long b, long acu){
+	int j = 0;
+    for(long i=0; i<s; i++){
+        long mask = 1 << i;
+        if((mask&b)){
+			j++;
+        }
+    }
+    if(j==s){
         return acu%d==0;
     }
     
-    if(dp[b][j][acu]!=-1){
-    	return dp[b][j][acu];
+    if(dp[b][acu]!=-1){
+    	return dp[b][acu];
     }
     
     long total = 0;
@@ -28,15 +34,15 @@ long c(long b, long j, long acu){
             long cb = b;
             cb = cb|mask;
             long aux = acu + (n[j]-'0')*pow(10, i);
-            long nodo = c(cb, j-1, aux%d);
+            long nodo = c(cb, aux%d);
             total += nodo;
             if(j-1>=0){
-            	dp[cb][j-1][aux%d] = nodo;	
+            	dp[cb][aux%d] = nodo;	
             }
             
         }
     }
-    dp[b][j][acu] = total;
+    dp[b][acu] = total;
     return total;
 }
 
@@ -71,7 +77,7 @@ int main() {
         for(long i=0; i<n.length(); i++){
             r[(n[i]-'0')]+=1;
         }
-        long res = c(0, n.length()-1, 0);
+        long res = c(0, 0);
         
         for(long i=0; i<10; i++){
             if(r[i]>1){

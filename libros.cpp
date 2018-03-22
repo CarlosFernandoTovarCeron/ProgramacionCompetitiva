@@ -1,28 +1,42 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   main.cpp
- * Author: invitado
- *
- * Created on 21 de marzo de 2018, 10:21 AM
- */
-
 #include <iostream>
-#define inf 10000000;
+#include <stdio.h>
+
+#define inf 1000000000;
 using namespace std;
 
-int suma[1005];
-int l, c, n;
-int costo(int j, int dis){
-    if(j==n+1){
-        return 0;
+struct pareja{
+    int libros;
+    int dis;
+    bool operator<(const pareja& obj){
+        if(libros<obj.libros){
+            return true;
+        }else if(libros==obj.libros){
+            if(dis<obj.dis){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
-    int minimo = inf;
-    int dismin = inf;
+};
+
+int suma[1005];
+pareja dp[1005];
+int l, c, n;
+pareja costo(int j){
+    if(j==n+1){
+        pareja ret;
+        ret.libros = 0;
+        ret.dis = 0;
+        return ret;
+    }
+    
+    if(dp[j].libros!=-1){
+        return dp[j];
+    }
+    
+    pareja minimo;
+    minimo.libros = inf;
     for(int k=j; k<=n; k++){
         int lecturas = suma[k] - suma[j-1];
         if(lecturas>l) break;
@@ -35,27 +49,36 @@ int costo(int j, int dis){
         }else{
             disaux = (tlibre-10)*(tlibre-10);
         }
-        int nodo = 1+costo(k+1, dis+disaux);
+        
+        pareja nodo = costo(k+1);
+        dp[k+1] = nodo;
+        nodo.libros = nodo.libros + 1;
+        nodo.dis = nodo.dis + disaux;
         if(nodo < minimo){
             minimo = nodo;
-            dismin = dis+disaux;
-        }else if(nodo == minimo){
-            if(dis+disaux<dismin){
+        }else if(nodo.libros == minimo.libros){
+            if(nodo.dis<minimo.dis){
                 minimo = nodo;
-                dismin = dis+disaux;
             }
         }
     }
-    
+    dp[j] = minimo;
     return minimo;
 }
 
 int main(int argc, char** argv) {
-    
+	freopen("inlibros.txt", "r", stdin);
+	freopen("outlibros.txt", "w", stdout);
+    int casos = 1;
     while(true){
         cin >> n;
         if(n==0){
             break;
+        }
+        for(int i=0; i<1005; i++){
+            pareja aux;
+            aux.libros=-1;
+            dp[i] = aux;
         }
        
         cin >> l >> c;
@@ -67,13 +90,17 @@ int main(int argc, char** argv) {
             s+=aux;
             suma[i] = s;
         }
-        
-        
-        
-        cout << costo(1, 0) << endl;
+        pareja res = costo(1);
+        if(casos!=1){
+        	cout << endl;
+		}
+        cout << "Case " << casos << ":" << endl;
+        cout << "Minimum number of lectures: " << res.libros << endl;
+        cout << "Total dissatisfaction index: " << res.dis << endl;
+        //cout << res.libros << " " << res.dis << endl;
+        casos++;
         
     }
 
     return 0;
 }
-

@@ -5,6 +5,7 @@
 #include <sstream>
 
 #define inf 1000000000;
+#define fin 205
 
 using namespace std;
 int n, m;
@@ -32,19 +33,19 @@ void expandir(int nodo){
     }
 }
 
-int c(int i, int j, int macu){
-    cout << i << " " << j << " " << macu << endl;
-    if(j==raices.size()){
+int c(int i, int macu){
+    //cout << i << " " << macu << endl;
+    if(i==fin or hijos[i].size()==0){
         if(macu>=m){
             return 0;
         }else{
             return inf;
         }
     }else{
-        int comprar = costo[i] + c(raices[j+1], j+1, macu+1+dominados[i]);
+        int comprar = costo[i] + c(fin, macu+1+dominados[i]);
         int nocomprar = 0;
         for(int k=0; k<hijos[i].size(); k++){
-            nocomprar+= c(hijos[i][k], j, macu);
+            nocomprar+= c(hijos[i][k], macu);
         }
         return min(comprar, nocomprar);
     }
@@ -67,12 +68,13 @@ int main() {
         string linea;
         getline(cin, linea);
         
-        for(int i=0; i<n; i++){
+        for(int i=0; i<=n; i++){
             hijos[i] = vector <int>();
             visitado[i] = false;
             papa[i] = -1;
         }
-        int j = 0; //id
+        int j = 1; //id
+        costo[0] = inf;
         for(int i=0; i<n; i++){
             getline(cin, linea);
             stringstream ss;
@@ -112,20 +114,26 @@ int main() {
         }
         
         
-        for(int i=0; i<n; i++){
+        for(int i=1; i<=n; i++){
             if(visitado[i]==false){
                 expandir(i);
             }
         }
         
+         
         for(int i=0; i<raices.size(); i++){
-            calcularDominados(raices[i]);
+            papa[raices[i]] = 0;
+            hijos[0].push_back(raices[i]);
         }
-        raices.push_back(50); //CAMBIAR 
+        
+
+        calcularDominados(0);
+        cout << dominados[0] << endl;
+        
         //cout << raices[0] << endl;
         //cout << hijos[1].size() << endl;
-        cout << hijos[1][0] << endl;
-        cout << c(raices[0], 0, 0);
+        //cout << hijos[1][0] << endl;
+        cout << c(0, 0) << endl;
         
         /*  
         cout << id["I"] << endl; 
@@ -133,7 +141,6 @@ int main() {
         cout << dominados[8] << endl;
         
         
-
       
         cout << "conjuntos " << raices.size() << endl << endl;
         
@@ -144,7 +151,6 @@ int main() {
         cout << "Id Boland: " << id["Boland"] << endl;
         cout << "papa Boland:" << papa[id["Boland"]] << endl << endl;
         cout << "Hijos Boland " << hijos[id["Boland"]].size() << endl; 
-
         
         cout << "Id Coland: " << id["Coland"] << endl;
         cout << "papa Coland:" << papa[id["Coland"]] << endl;
